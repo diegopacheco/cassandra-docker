@@ -1,8 +1,8 @@
 #!/bin/bash
 
-sed -i s/@CASS_NODE_IP/$(hostname -i)/g /cassandra/apache-cassandra-3.9/conf/cassandra.yaml
+sed -i s/@CASS_NODE_IP/$(hostname -i)/g /cassandra/apache-cassandra-$CASS_VERSION/conf/cassandra.yaml
 
-cd /cassandra/apache-cassandra-3.9/
-/cassandra/apache-cassandra-3.9/bin/cassandra -R > /cassandra/cassandra.txt
+cd /cassandra/apache-cassandra-$CASS_VERSION/
+/cassandra/apache-cassandra-$CASS_VERSION/bin/cassandra -R > /cassandra/cassandra.txt
 
 tail -f /cassandra/cassandra.txt

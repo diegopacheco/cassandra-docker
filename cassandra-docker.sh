@@ -1,6 +1,7 @@
 #!/bin/bash
 
-DV=$2
+CV=$2
+CV2=$3
 
 function bake(){
    docker build -t diegopacheco/cassandradocker . --network=host
@@ -22,22 +23,31 @@ function setUpNetwork(){
 
 function setupCluster(){
   SHARED=/usr/local/docker-shared/cassandra-1/:/var/lib/cassandra/
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 diegopacheco/cassandradocker
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 
   SHARED=/usr/local/docker-shared/cassandra-2/:/var/lib/cassandra/
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra2 diegopacheco/cassandradocker
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra2 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 
   SHARED=/usr/local/docker-shared/cassandra-3/:/var/lib/cassandra/
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra3 diegopacheco/cassandradocker
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra3 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 }
 
 function run(){
-  cleanUp
-  setUpNetwork
-  setupCluster
-  info
+  echo "$CV"
+     if [[ "$CV" = *[!\ ]* ]];
+     then
+        cleanUp
+        setUpNetwork
+        setupCluster
+        info
+     else
+        missingVerion
+     fi
 }
 
+function missingVerion(){
+  echo "Mising Cassandra version! Aborting! You need pass the version: 2.1.19, 3.9"
+}
 
 function info(){
   echo "ClusterTopology :"
@@ -70,13 +80,18 @@ function help(){
 }
 
 function log(){
-  docker exec -i -t cassandra$DV cat /cassandra/cassandra.txt
+  docker exec -i -t cassandra$CV cat /cassandra/cassandra.txt
 }
 
 function cqlsh(){
-  if [[ "$DV" = *[!\ ]* ]];
+  if [[ "$CV" = *[!\ ]* ]];
   then
-    docker exec -it cassandra$DV /cassandra/apache-cassandra-3.9/bin/cqlsh 178.18.10$DV
+    if [[ "$CV2" = *[!\ ]* ]];
+    then
+      docker exec -it cassandra$CV /cassandra/apache-cassandra-$CV2/bin/cqlsh 178.18.10$CV
+    else
+      missingVerion
+    fi
   else
     echo "Mising Cassandra node! Aborting! You need pass the node: 1, 2 or 3"
   fi

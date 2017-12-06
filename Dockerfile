@@ -32,10 +32,9 @@ RUN mv apache-cassandra-2.1.19/ /cassandra/apache-cassandra-2.1.19
 
 # Configure the cluster
 ADD start-cass.sh  /cassandra/
-ADD cassandra.yaml /cassandra/apache-cassandra-3.9/conf/
 RUN chmod +x /cassandra/start-cass.sh
-ADD cassandra.yaml /cassandra/apache-cassandra-2.1.19/conf/
-RUN chmod +x /cassandra/start-cass.sh
+ADD cassandra-3.9.yaml /cassandra/apache-cassandra-3.9/conf/cassandra.yaml
+ADD cassandra-2.1.19.yaml /cassandra/apache-cassandra-2.1.19/conf/cassandra.yaml
 
 EXPOSE 9160
 EXPOSE 9042
