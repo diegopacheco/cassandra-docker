@@ -2,9 +2,13 @@
 
 CV=$2
 CV2=$3
+mac_docker_ip="localhost"
+mac_dir=/Users/cassandra_docker/
 
 function bake(){
-   docker build -t diegopacheco/cassandradocker . --network=host
+  sudo mkdir $mac_dir
+  sudo mkdir $mac_dir/cass/
+  docker build -t diegopacheco/cassandradocker . --network=host
 }
 
 function cleanUp(){
@@ -22,14 +26,14 @@ function setUpNetwork(){
 }
 
 function setupCluster(){
-  SHARED=/usr/local/docker-shared/cassandra-1/:/var/lib/cassandra/
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 -e CASS_VERSION=$CV diegopacheco/cassandradocker
+  SHARED=$mac_dir/cass/cassandra-1/:/var/lib/cassandra/
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 -p 32101:9060 -p 32102:9042 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 
-  SHARED=/usr/local/docker-shared/cassandra-2/:/var/lib/cassandra/
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra2 -e CASS_VERSION=$CV diegopacheco/cassandradocker
+  SHARED=$mac_dir/cass/cassandra-2/:/var/lib/cassandra/
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra2 -p 32103:9060 -p 32104:9042 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 
-  SHARED=/usr/local/docker-shared/cassandra-3/:/var/lib/cassandra/
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra3 -e CASS_VERSION=$CV diegopacheco/cassandradocker
+  SHARED=$mac_dir/cass/cassandra-3/:/var/lib/cassandra/
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra3 -p 32105:9060 -p 32106:9042 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 }
 
 function run(){

@@ -22,9 +22,9 @@ Simple Docker Image for Cassandra. cassandra-docker provides utilities to create
 * 3.9    <BR>
 
 ## What parameters can I use?
+
 ```bash
 $ ./cassandra-docker.sh help
-
  #####                             ######                                     
 #     #   ##    ####   ####        #     #  ####   ####  #    # ###### #####   
 #        #  #  #      #            #     # #    # #    # #   #  #      #    #  
@@ -40,7 +40,7 @@ bake        : Bakes docker image
 run         : Run cassandra docker cluster. i.e: ./cassandra-docker.sh run 2.1
 info        : Get topology
 log         : Print cassandra logs, you need pass the node number. i.e: ./cassandra-docker.sh log 1
-cqlsh       : Enters cqlsh on cassandra. i.e: ./cassandra-docker.sh cqlsh 1
+cqlsh       : Enters cqlsh on cassandra. i.e: ./cassandra-docker.sh cqlsh 1 3.9
 stop        : Stop and clean up all docker running images
 help        : help documentation
 
@@ -55,9 +55,15 @@ help        : help documentation
 
 ## What are my seeds/topology?
 
-Cluster 1A
+Cluster 1A (Linux)
 ```bash
 178.18.0.101 - 9160 / 9042
 179.18.0.102 - 9160 / 9042
 179.18.0.103 - 9160 / 9042
+```
+Cluster 1A (Mac)
+```bash
+178.18.0.101 - 32101(9160) / 32102(9042)
+179.18.0.102 - 32103(9160) / 32104(9042)
+179.18.0.103 - 32105(9160) / 32106(9042)
 ```
