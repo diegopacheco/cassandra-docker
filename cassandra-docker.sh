@@ -25,10 +25,10 @@ function setupCluster(){
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 diegopacheco/cassandradocker
 
   SHARED=/usr/local/docker-shared/cassandra-2/:/var/lib/cassandra/
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra1 diegopacheco/cassandradocker
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra2 diegopacheco/cassandradocker
 
   SHARED=/usr/local/docker-shared/cassandra-3/:/var/lib/cassandra/
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra1 diegopacheco/cassandradocker
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra3 diegopacheco/cassandradocker
 }
 
 function run(){

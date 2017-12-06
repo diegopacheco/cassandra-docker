@@ -32,4 +32,4 @@ RUN sed -i s/@CASS_NODE_IP/$(hostname -i)/g /cassandra/apache-cassandra-3.9/conf
 EXPOSE 9160
 EXPOSE 9042
 
-CMD ["/start-cass.sh"]
+CMD ["/cassandra/start-cass.sh"]
