@@ -48,12 +48,20 @@ function info(){
 }
 
 function help(){
+   echo " #####                             ######                                     "
+   echo "#     #   ##    ####   ####        #     #  ####   ####  #    # ###### #####   "
+   echo "#        #  #  #      #            #     # #    # #    # #   #  #      #    #  "
+   echo "#       #    #  ####   ####  ##### #     # #    # #      ####   #####  #    #  "
+   echo "#       ######      #      #       #     # #    # #      #  #   #      #####   "
+   echo "#     # #    # #    # #    #       #     # #    # #    # #   #  #      #   #   "
+   echo " #####  #    #  ####   ####        ######   ####   ####  #    # ###### #    #   "
+   echo "                                                                               "
    echo " "
-   echo "cassandra-docker: easy setup for cassandra cluster(3.9) for development. Created by: Diego Pacheco."
+   echo "cassandra-docker: Easy setup for cassandra cluster(2.1 & 3.9) for development. Created by: Diego Pacheco."
    echo "functions: "
    echo ""
    echo "bake        : Bakes docker image"
-   echo "run         : Run cassandra docker cluster"
+   echo "run         : Run cassandra docker cluster. i.e: ./cassandra-docker.sh run 2.1"
    echo "info        : Get topology"
    echo "log         : Print cassandra logs, you need pass the node number. i.e: ./cassandra-docker.sh log 1"
    echo "cqlsh       : Enters cqlsh on cassandra. i.e: ./cassandra-docker.sh cqlsh 1"
