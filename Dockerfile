@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 RUN wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz"
 RUN tar -xzvf jdk-8u151-linux-x64.tar.gz
 RUN rm -rf jdk-8u151-linux-x64.tar.gz
-RUN echo "alias cls='clear'\nexport JAVA_HOME=~/jdk1.8.0_151\nexport JRE_HOME=~/jdk1.8.0_151/jre\nexport PATH=$PATH:~/jdk1.8.0_151/bin:/~/jdk1.8.0_151/jre/bin" >> ~/.bashrc
+RUN echo "alias cls='clear'\nexport JAVA_HOME=~/jdk1.8.0_151\nexport JRE_HOME=~/jdk1.8.0_151/jre\nexport PATH=$PATH:~/jdk1.8.0_151/bin:/~/jdk1.8.0_151/jre/bin" >> /etc/profile
 
 # Install Cassandra
 RUN mkdir /cassandra/ && chmod 777 /cassandra/
