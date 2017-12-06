@@ -68,7 +68,7 @@ function log(){
 function cqlsh(){
   if [[ "$DV" = *[!\ ]* ]];
   then
-    docker exec -it cassandra$DV /cassandra/apache-cassandra-3.9/bin/cqlsh $(hostname -i)
+    docker exec -it cassandra$DV /cassandra/apache-cassandra-3.9/bin/cqlsh 178.18.10$DV
   else
     echo "Mising Cassandra node! Aborting! You need pass the node: 1, 2 or 3"
   fi
