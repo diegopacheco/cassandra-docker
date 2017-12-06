@@ -4,9 +4,9 @@ Simple Docker Image for Cassandra. cassandra-docker provides utilities to create
 
 ## Linux: How to use it? (native)
 
-2. Download and install Docker. -> https://docs.docker.com/engine/installation/
-3. Bake docker images $ ./cassandra-docker.sh bake
-3. Create the Cassandra cluster $ ./cassandra-docker.sh run
+1. Download and install Docker. -> https://docs.docker.com/engine/installation/
+2. Bake docker images $ ./cassandra-docker.sh bake
+3. Create the Cassandra cluster $ ./cassandra-docker.sh run 3.9
 
 ## Windows/Mac: How to use it?
 
@@ -14,7 +14,7 @@ Simple Docker Image for Cassandra. cassandra-docker provides utilities to create
 
 1. Install docker -> https://docs.docker.com/docker-for-mac/install/
 2. (just 1 time) Bake docker images $ sudo ./cassandra-docker-mac.sh bake
-3. Create the Cassandra cluster $ sudo ./cassandra-docker-mac.sh run
+3. Create the Cassandra cluster $ sudo ./cassandra-docker-mac.sh run 3.9
 
 ## What cassandra versions are suppoorted?
 
@@ -67,3 +67,8 @@ Cluster 1A (Mac)
 179.18.0.102 - 32103(9160) / 32104(9042)
 179.18.0.103 - 32105(9160) / 32106(9042)
 ```
+
+## Similar projects
+
+* dynomite-docker         -> https://github.com/diegopacheco/dynomite-docker
+* dynomite-dooker-rocksdb -> https://github.com/diegopacheco/dynomite-docker-rocksdb
