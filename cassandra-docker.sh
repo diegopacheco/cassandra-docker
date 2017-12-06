@@ -49,7 +49,7 @@ function info(){
 
 function help(){
    echo " "
-   echo "casandra-docker: easy setup for cassandra cluster(3.9) for development. Created by: Diego Pacheco."
+   echo "cassandra-docker: easy setup for cassandra cluster(3.9) for development. Created by: Diego Pacheco."
    echo "functions: "
    echo ""
    echo "bake        : Bakes docker image"
@@ -68,7 +68,7 @@ function log(){
 function cqlsh(){
   if [[ "$DV" = *[!\ ]* ]];
   then
-    docker exec -it cassandra$DV /casandra/apache-cassandra-3.9/bin/cqlsh $(hostname -i)
+    docker exec -it cassandra$DV /cassandra/apache-cassandra-3.9/bin/cqlsh $(hostname -i)
   else
     echo "Mising Cassandra node! Aborting! You need pass the node: 1, 2 or 3"
   fi
