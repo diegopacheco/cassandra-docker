@@ -32,4 +32,4 @@ RUN chmod +x /cassandra/start-cass.sh
 EXPOSE 9160
 EXPOSE 9042
 
-CMD ["/cassandra/start-cass.sh"]
+CMD ["sh","-c","cd /cassandra/ && /cassandra/start-cass.sh"]
