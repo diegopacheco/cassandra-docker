@@ -22,13 +22,13 @@ function setUpNetwork(){
 }
 
 function setupCluster(){
-  SHARED=/usr/local/docker-shared/cassandra-1/:/cassandra/apache-cassandra-$CV/data
+  SHARED=/usr/local/docker-shared/cassandra-1-$CV/:/cassandra/apache-cassandra-$CV/data
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 
-  SHARED=/usr/local/docker-shared/cassandra-2/:/cassandra/apache-cassandra-$CV/data
+  SHARED=/usr/local/docker-shared/cassandra-2-$CV/:/cassandra/apache-cassandra-$CV/data
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra2 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 
-  SHARED=/usr/local/docker-shared/cassandra-3/:/cassandra/apache-cassandra-$CV/data
+  SHARED=/usr/local/docker-shared/cassandra-3-$CV/:/cassandra/apache-cassandra-$CV/data
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra3 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 }
 
@@ -49,6 +49,10 @@ function createSchemaAndData(){
   else
     echo "Mising Cassandra node! Aborting! You need pass the node: 1, 2 or 3"
   fi
+}
+
+function cleanData(){
+  sudo rm -rf /usr/local/docker-shared/cassandra-*
 }
 
 function run(){
@@ -95,6 +99,7 @@ function help(){
    echo "log         : Print cassandra logs, you need pass the node number. i.e: ./cassandra-docker.sh log 1"
    echo "cqlsh       : Enters cqlsh on cassandra. i.e: ./cassandra-docker.sh cqlsh 1 3.9"
    echo "schema      : Create some Schema and Data on cluster i.e: ./cassandra-docker.sh schema 1 3.9"
+   echo "cleanData   : Delete all cassandra data files"
    echo "stop        : Stop and clean up all docker running images"
    echo "help        : help documentation"
 }
@@ -135,6 +140,9 @@ case $1 in
           ;;
       "schema")
           createSchemaAndData
+          ;;
+      "cleanData")
+          cleanData
           ;;
       "stop")
           cleanUp

@@ -41,6 +41,8 @@ run         : Run cassandra docker cluster. i.e: ./cassandra-docker.sh run 2.1
 info        : Get topology
 log         : Print cassandra logs, you need pass the node number. i.e: ./cassandra-docker.sh log 1
 cqlsh       : Enters cqlsh on cassandra. i.e: ./cassandra-docker.sh cqlsh 1 3.9
+schema      : Create some Schema and Data on cluster i.e: ./cassandra-docker.sh schema 1 3.9
+cleanData   : Delete all cassandra data files
 stop        : Stop and clean up all docker running images
 help        : help documentation
 
