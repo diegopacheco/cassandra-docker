@@ -27,7 +27,7 @@ RUN mv apache-cassandra-3.9/ /cassandra/apache-cassandra-3.9
 # Configure the cluster
 ADD start-cass.sh  /cassandra/
 ADD cassandra.yaml /casandra/apache-cassandra-3.9/conf/
-RUN sed $(hostname -i)/q/@CASS_NODE_IP >> /apache-cassandra-3.9/conf/cassandra.yaml
+RUN sed -i s/@CASS_NODE_IP/$(hostname -i)/g /apache-cassandra-3.9/conf/cassandra.yaml
 
 EXPOSE 9160
 EXPOSE 9042
