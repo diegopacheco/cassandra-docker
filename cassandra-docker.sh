@@ -22,14 +22,33 @@ function setUpNetwork(){
 }
 
 function setupCluster(){
-  SHARED=/usr/local/docker-shared/cassandra-1/:/var/lib/cassandra/
+  SHARED=/usr/local/docker-shared/cassandra-1/:/cassandra/apache-cassandra-$CV/data
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 
-  SHARED=/usr/local/docker-shared/cassandra-2/:/var/lib/cassandra/
+  SHARED=/usr/local/docker-shared/cassandra-2/:/cassandra/apache-cassandra-$CV/data
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra2 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 
-  SHARED=/usr/local/docker-shared/cassandra-3/:/var/lib/cassandra/
+  SHARED=/usr/local/docker-shared/cassandra-3/:/cassandra/apache-cassandra-$CV/data
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra3 -e CASS_VERSION=$CV diegopacheco/cassandradocker
+}
+
+function createSchemaAndData(){
+  if [[ "$CV" = *[!\ ]* ]];
+  then
+    if [[ "$CV2" = *[!\ ]* ]];
+    then
+      docker exec -it cassandra$CV sh -c "echo \"
+       CREATE KEYSPACE CLUSTER_TEST WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
+       USE CLUSTER_TEST;
+       CREATE TABLE TEST ( key text PRIMARY KEY, value text);
+       INSERT INTO TEST (key,value) VALUES ('1', 'works');
+       SELECT * from CLUSTER_TEST.TEST;\" | /cassandra/apache-cassandra-$CV2/bin/cqlsh 178.18.10$CV"
+    else
+      missingVerion
+    fi
+  else
+    echo "Mising Cassandra node! Aborting! You need pass the node: 1, 2 or 3"
+  fi
 }
 
 function run(){
@@ -75,6 +94,7 @@ function help(){
    echo "info        : Get topology"
    echo "log         : Print cassandra logs, you need pass the node number. i.e: ./cassandra-docker.sh log 1"
    echo "cqlsh       : Enters cqlsh on cassandra. i.e: ./cassandra-docker.sh cqlsh 1 3.9"
+   echo "schema      : Create some Schema and Data on cluster i.e: ./cassandra-docker.sh schema 1 3.9"
    echo "stop        : Stop and clean up all docker running images"
    echo "help        : help documentation"
 }
@@ -112,6 +132,9 @@ case $1 in
           ;;
       "cqlsh")
           cqlsh
+          ;;
+      "schema")
+          createSchemaAndData
           ;;
       "stop")
           cleanUp
