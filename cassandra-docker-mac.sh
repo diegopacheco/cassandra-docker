@@ -102,6 +102,7 @@ function help(){
    echo "info        : Get topology"
    echo "log         : Print cassandra logs, you need pass the node number. i.e: ./cassandra-docker.sh log 1"
    echo "cqlsh       : Enters cqlsh on cassandra. i.e: ./cassandra-docker.sh cqlsh 1 3.9"
+   echo "bash        : Enters ssh/bash on cassandra node. i.e: ./cassandra-docker.sh bash 1"   
    echo "schema      : Create some Schema and Data on cluster i.e: ./cassandra-docker.sh schema 1 3.9"
    echo "cleanData   : Delete all cassandra data files"
    echo "stop        : Stop and clean up all docker running images"
@@ -121,6 +122,15 @@ function cqlsh(){
     else
       missingVerion
     fi
+  else
+    echo "Mising Cassandra node! Aborting! You need pass the node: 1, 2 or 3"
+  fi
+}
+
+function node_bash(){
+  if [[ "$CV" = *[!\ ]* ]];
+  then
+    docker exec -it cassandra$CV bash
   else
     echo "Mising Cassandra node! Aborting! You need pass the node: 1, 2 or 3"
   fi
@@ -147,6 +157,9 @@ case $1 in
           ;;
       "cleanData")
           cleanData
+          ;;
+      "bash")
+          node_bash
           ;;
       "stop")
           cleanUp
