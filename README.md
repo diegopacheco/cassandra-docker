@@ -43,6 +43,10 @@ log         : Print cassandra logs, you need pass the node number. i.e: ./cassan
 cqlsh       : Enters cqlsh on cassandra. i.e: ./cassandra-docker.sh cqlsh 1 3.9
 schema      : Create some Schema and Data on cluster i.e: ./cassandra-docker.sh schema 1 3.9
 cleanData   : Delete all cassandra data files
+backup      : Does a snaposhot on a node with today date. i.e: ./cassandra-docker.sh backup 1 2.1.19
+restore     : Does a restore on a node by date. i.e: ./cassandra-docker.sh restore 1 2.1.19 2017-12-11
+all         : Select * from defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh all 2.1.19
+truncate    : TRUNCATE TABLE defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh truncate 2.1.19
 stop        : Stop and clean up all docker running images
 help        : help documentation
 
