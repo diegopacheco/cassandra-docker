@@ -2,6 +2,8 @@
 
 CV=$2
 CV2=$3
+main_keyspace=cluster_test
+main_table=test
 
 function bake(){
    docker build -t diegopacheco/cassandradocker . --network=host
@@ -99,6 +101,7 @@ function help(){
    echo "cleanData   : Delete all cassandra data files"
    echo "backup      : Does a snaposhot on a node with today date. i.e: ./cassandra-docker.sh backup 1 2.1.19"
    echo "restore     : Does a restore on a node by date. i.e: ./cassandra-docker.sh restore 1 2.1.19 2017-12-11"
+   echo "all         : Select * from defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh all 2.1.19"
    echo "stop        : Stop and clean up all docker running images"
    echo "help        : help documentation"
 }
@@ -147,6 +150,16 @@ function restore(){
    docker exec -it cassandra$CV /cassandra/cassandra-manager.sh restore $CV2
 }
 
+function all(){
+  cass_version=$CV
+  for i in `seq 1 3`;
+  do
+    echo "Node 178.18.0.10$i - Cassandra version [$cass_version] - SELECT * FROM $main_keyspace.$main_table;"
+    docker exec -it cassandra$i sh -c \
+    "echo 'SELECT * FROM $main_keyspace.$main_table;' | /cassandra/apache-cassandra-$cass_version/bin/cqlsh 178.18.0.10$i"
+  done
+}
+
 case $1 in
      "bake")
           bake
@@ -180,6 +193,9 @@ case $1 in
           ;;
       "stop")
           cleanUp
+          ;;
+       "all")
+          all
           ;;
       *)
           help
