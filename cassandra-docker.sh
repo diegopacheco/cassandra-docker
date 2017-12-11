@@ -50,16 +50,11 @@ function cleanData(){
 }
 
 function run(){
-  echo "$CV"
-     if [[ "$CV" = *[!\ ]* ]];
-     then
-        cleanUp
-        setUpNetwork
-        setupCluster
-        info
-     else
-        missingVerion
-     fi
+  ensureVersionIsPresent
+  cleanUp
+  setUpNetwork
+  setupCluster
+  info
 }
 
 function missingVerion(){
@@ -102,6 +97,7 @@ function help(){
    echo "backup      : Does a snaposhot on a node with today date. i.e: ./cassandra-docker.sh backup 1 2.1.19"
    echo "restore     : Does a restore on a node by date. i.e: ./cassandra-docker.sh restore 1 2.1.19 2017-12-11"
    echo "all         : Select * from defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh all 2.1.19"
+   echo "truncate    : TRUNCATE TABLE defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh truncate 2.1.19"
    echo "stop        : Stop and clean up all docker running images"
    echo "help        : help documentation"
 }
@@ -120,6 +116,16 @@ function ensureNodeVersionIsPresent(){
     missingNode
     exit 1
   fi
+}
+
+function ensureVersionIsPresent(){
+    if [[ "$CV" = *[!\ ]* ]];
+    then
+      valid="OK"
+    else
+      missingVerion
+      exit 1
+    fi
 }
 
 function log(){
@@ -160,6 +166,14 @@ function all(){
   done
 }
 
+function truncate(){
+  ensureVersionIsPresent
+  cass_version=$CV
+  echo "Truncate $main_keyspace.$main_table - Cassandra version [$cass_version]"
+  docker exec -it cassandra$i sh -c \
+  "echo 'TRUNCATE TABLE $main_keyspace.$main_table;' | /cassandra/apache-cassandra-$cass_version/bin/cqlsh 178.18.0.101"
+}
+
 case $1 in
      "bake")
           bake
@@ -194,8 +208,11 @@ case $1 in
       "stop")
           cleanUp
           ;;
-       "all")
+      "all")
           all
+          ;;
+      "truncate")
+          truncate
           ;;
       *)
           help
