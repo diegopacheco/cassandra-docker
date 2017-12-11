@@ -170,7 +170,7 @@ function truncate(){
   ensureVersionIsPresent
   cass_version=$CV
   echo "Truncate $main_keyspace.$main_table - Cassandra version [$cass_version]"
-  docker exec -it cassandra$i sh -c \
+  docker exec -it cassandra1 sh -c \
   "echo 'TRUNCATE TABLE $main_keyspace.$main_table;' | /cassandra/apache-cassandra-$cass_version/bin/cqlsh 178.18.0.101"
 }
 
