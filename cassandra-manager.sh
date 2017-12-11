@@ -1,6 +1,8 @@
 #!/bin/bash
 
 VERSION=$2
+main_keyspace=cluster_test
+main_table=test
 data_dir=/cassandra/apache-cassandra-$VERSION/data/data/
 backup_dir=/cassandra/backup/
 cqlsh=/cassandra/apache-cassandra-$VERSION/bin/cqlsh
@@ -20,7 +22,7 @@ function backup_data(){
   echo "Backup Data $keyspace ..."
   $nodetool snapshot -t ${keyspace}-data-backup ${keyspace}
   cp -prf $data_dir/$keyspace/* $backup_dir/$TODAY/
-  #$nodetool clearsnapshot ${keyspace}
+  $nodetool clearsnapshot ${keyspace}
 }
 
 function mainBackup(){
@@ -38,8 +40,8 @@ function mainBackup(){
 
 function mainRestore(){
   ensureVersionPresent
-  #$nodetool repair -- cluster_test
-  $nodetool refresh -- cluster_test test
+  cp -R $backup_dir/$TODAY/$main_table-*/ /cassandra/apache-cassandra-$VERSION/data/data/$main_keyspace/$main_table-*/
+  $nodetool refresh -- $main_keyspace $main_table
   echo "Restore done."
 }
 
