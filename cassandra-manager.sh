@@ -39,6 +39,7 @@ function mainBackup(){
 function mainRestore(){
   ensureVersionPresent
   $nodetool refresh -- cluster_test test
+  $nodetool repair -- cluster_test
   echo "Restore done."
 }
 
