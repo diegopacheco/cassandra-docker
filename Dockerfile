@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
 	libssl-dev \
 	libtool \
 	python-software-properties \
-	vim
+	vim \
 	unzip
 
 # Install Java 8
