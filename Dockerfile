@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
 	libssl-dev \
 	libtool \
 	python-software-properties \
+	vim
 	unzip
 
 # Install Java 8
@@ -32,6 +33,7 @@ RUN mv apache-cassandra-2.1.19/ /cassandra/apache-cassandra-2.1.19
 
 # Configure the cluster
 ADD start-cass.sh  /cassandra/
+ADD cassandra-manager.sh /cassandra/
 RUN chmod +x /cassandra/start-cass.sh
 ADD cassandra-3.9.yaml /cassandra/apache-cassandra-3.9/conf/cassandra.yaml
 ADD cassandra-2.1.19.yaml /cassandra/apache-cassandra-2.1.19/conf/cassandra.yaml
