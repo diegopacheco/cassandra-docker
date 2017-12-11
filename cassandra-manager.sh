@@ -40,7 +40,7 @@ function mainBackup(){
 
 function mainRestore(){
   ensureVersionPresent
-  cp -R $backup_dir/$TODAY/$main_table-*/ /cassandra/apache-cassandra-$VERSION/data/data/$main_keyspace/$main_table-*/
+  cp -R $backup_dir/$TODAY/$main_table-*/snapshots/$main_keyspace-data-backup/ /cassandra/apache-cassandra-$VERSION/data/data/$main_keyspace/$main_table-*/
   $nodetool refresh -- $main_keyspace $main_table
   echo "Restore done."
 }
