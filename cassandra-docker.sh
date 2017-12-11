@@ -33,22 +33,14 @@ function setupCluster(){
 }
 
 function createSchemaAndData(){
-  if [[ "$CV" = *[!\ ]* ]];
-  then
-    if [[ "$CV2" = *[!\ ]* ]];
-    then
-      docker exec -it cassandra$CV sh -c "echo \"
-       CREATE KEYSPACE CLUSTER_TEST WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
-       USE CLUSTER_TEST;
-       CREATE TABLE TEST ( key text PRIMARY KEY, value text);
-       INSERT INTO TEST (key,value) VALUES ('1', 'works');
-       SELECT * from CLUSTER_TEST.TEST;\" | /cassandra/apache-cassandra-$CV2/bin/cqlsh 178.18.10$CV"
-    else
-      missingVerion
-    fi
-  else
-    echo "Mising Cassandra node! Aborting! You need pass the node: 1, 2 or 3"
-  fi
+  ensureNodeVersionIsPresent
+  docker exec -it cassandra$CV sh -c "echo \"
+   CREATE KEYSPACE CLUSTER_TEST WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 };
+   USE CLUSTER_TEST;
+   CREATE TABLE TEST ( key text PRIMARY KEY, value text);
+   INSERT INTO TEST (key,value) VALUES ('1', 'works');
+   SELECT * from CLUSTER_TEST.TEST;\" | /cassandra/apache-cassandra-$CV2/bin/cqlsh 178.18.10$CV
+  "
 }
 
 function cleanData(){
@@ -70,6 +62,10 @@ function run(){
 
 function missingVerion(){
   echo "Mising Cassandra version! Aborting! You need pass the version: 2.1.19, 3.9"
+}
+
+function missingNode(){
+  echo "Mising Cassandra node! Aborting! You need pass the node: 1,2 or 3"
 }
 
 function info(){
@@ -101,8 +97,26 @@ function help(){
    echo "bash        : Enters ssh/bash on cassandra node. i.e: ./cassandra-docker.sh bash 1"
    echo "schema      : Create some Schema and Data on cluster i.e: ./cassandra-docker.sh schema 1 3.9"
    echo "cleanData   : Delete all cassandra data files"
+   echo "backup      : Does a snaposhot on a node with today date. i.e: ./cassandra-docker.sh backup 1 2.1.19"
+   echo "restore     : Does a restore on a node by date. i.e: ./cassandra-docker.sh restore 1 2.1.19 2017-12-11"
    echo "stop        : Stop and clean up all docker running images"
    echo "help        : help documentation"
+}
+
+function ensureNodeVersionIsPresent(){
+  if [[ "$CV" = *[!\ ]* ]];
+  then
+    if [[ "$CV2" = *[!\ ]* ]];
+    then
+      valid="OK"
+    else
+      missingVerion
+      exit 1
+    fi
+  else
+    missingNode
+    exit 1
+  fi
 }
 
 function log(){
@@ -110,17 +124,8 @@ function log(){
 }
 
 function cqlsh(){
-  if [[ "$CV" = *[!\ ]* ]];
-  then
-    if [[ "$CV2" = *[!\ ]* ]];
-    then
-      docker exec -it cassandra$CV /cassandra/apache-cassandra-$CV2/bin/cqlsh 178.18.10$CV
-    else
-      missingVerion
-    fi
-  else
-    echo "Mising Cassandra node! Aborting! You need pass the node: 1, 2 or 3"
-  fi
+  ensureNodeVersionIsPresent
+  docker exec -it cassandra$CV /cassandra/apache-cassandra-$CV2/bin/cqlsh 178.18.10$CV
 }
 
 function node_bash(){
@@ -128,8 +133,18 @@ function node_bash(){
   then
     docker exec -it cassandra$CV bash
   else
-    echo "Mising Cassandra node! Aborting! You need pass the node: 1, 2 or 3"
+    missingNode
   fi
+}
+
+function backup(){
+   ensureNodeVersionIsPresent
+   docker exec -it cassandra$CV /cassandra/cassandra-manager.sh backup $CV2
+}
+
+function restore(){
+   ensureNodeVersionIsPresent
+   docker exec -it cassandra$CV /cassandra/cassandra-manager.sh restore $CV2
 }
 
 case $1 in
@@ -156,6 +171,12 @@ case $1 in
           ;;
       "bash")
           node_bash
+          ;;
+      "backup")
+          backup
+          ;;
+      "restore")
+          restore
           ;;
       "stop")
           cleanUp
