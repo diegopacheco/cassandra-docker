@@ -10,6 +10,21 @@ function bake(){
    docker build -t diegopacheco/cassandradocker . --network=host
 }
 
+function setupCluster(){
+  SHARED=/usr/local/docker-shared/cassandra-1-$CV/:/cassandra/apache-cassandra-$CV/data
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 -e CASS_VERSION=$CV diegopacheco/cassandradocker
+
+  SHARED=/usr/local/docker-shared/cassandra-2-$CV/:/cassandra/apache-cassandra-$CV/data
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra2 -e CASS_VERSION=$CV diegopacheco/cassandradocker
+
+  SHARED=/usr/local/docker-shared/cassandra-3-$CV/:/cassandra/apache-cassandra-$CV/data
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra3 -e CASS_VERSION=$CV diegopacheco/cassandradocker
+}
+
+function cleanData(){
+  sudo rm -rf /usr/local/docker-shared/cassandra-*
+}
+
 function cleanUp(){
   docker stop cassandra1 > /dev/null 2>&1 ; docker rm cassandra1 > /dev/null 2>&1
   docker stop cassandra2 > /dev/null 2>&1 ; docker rm cassandra2 > /dev/null 2>&1
@@ -24,17 +39,6 @@ function setUpNetwork(){
   docker network ls
 }
 
-function setupCluster(){
-  SHARED=/usr/local/docker-shared/cassandra-1-$CV/:/cassandra/apache-cassandra-$CV/data
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 -e CASS_VERSION=$CV diegopacheco/cassandradocker
-
-  SHARED=/usr/local/docker-shared/cassandra-2-$CV/:/cassandra/apache-cassandra-$CV/data
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra2 -e CASS_VERSION=$CV diegopacheco/cassandradocker
-
-  SHARED=/usr/local/docker-shared/cassandra-3-$CV/:/cassandra/apache-cassandra-$CV/data
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra3 -e CASS_VERSION=$CV diegopacheco/cassandradocker
-}
-
 function createSchemaAndData(){
   ensureNodeVersionIsPresent
   docker exec -it cassandra$CV sh -c "echo \"
@@ -44,10 +48,6 @@ function createSchemaAndData(){
    INSERT INTO TEST (key,value) VALUES ('1', 'works');
    SELECT * from CLUSTER_TEST.TEST;\" | /cassandra/apache-cassandra-$CV2/bin/cqlsh 178.18.10$CV
   "
-}
-
-function cleanData(){
-  sudo rm -rf /usr/local/docker-shared/cassandra-*
 }
 
 function run(){

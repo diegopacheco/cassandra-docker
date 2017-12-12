@@ -8,25 +8,10 @@ mac_dir=/Users/cassandra_docker/
 main_keyspace=cluster_test
 main_table=test
 
-
 function bake(){
   sudo mkdir $mac_dir
   sudo mkdir $mac_dir/cass/
   docker build -t diegopacheco/cassandradocker . --network=host
-}
-
-function cleanUp(){
-  docker stop cassandra1 > /dev/null 2>&1 ; docker rm cassandra1 > /dev/null 2>&1
-  docker stop cassandra2 > /dev/null 2>&1 ; docker rm cassandra2 > /dev/null 2>&1
-  docker stop cassandra3 > /dev/null 2>&1 ; docker rm cassandra3 > /dev/null 2>&1
-
-  docker network rm myDockerNetCassandra > /dev/null 2>&1
-  echo "Docker images and Network clean up DONE."
-}
-
-function setUpNetwork(){
-  docker network create --subnet=178.18.0.0/16 myDockerNetCassandra
-  docker network ls
 }
 
 function setupCluster(){
@@ -38,6 +23,24 @@ function setupCluster(){
 
   SHARED=$mac_dir/cass/cassandra-3-$CV/::/cassandra/apache-cassandra-$CV/data
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra3 -p 32105:9060 -p 32106:9042 -e CASS_VERSION=$CV diegopacheco/cassandradocker
+}
+
+function cleanData(){
+  sudo rm -rf $mac_dir/cass/cassandra-*
+}
+
+function setUpNetwork(){
+  docker network create --subnet=178.18.0.0/16 myDockerNetCassandra
+  docker network ls
+}
+
+function cleanUp(){
+  docker stop cassandra1 > /dev/null 2>&1 ; docker rm cassandra1 > /dev/null 2>&1
+  docker stop cassandra2 > /dev/null 2>&1 ; docker rm cassandra2 > /dev/null 2>&1
+  docker stop cassandra3 > /dev/null 2>&1 ; docker rm cassandra3 > /dev/null 2>&1
+
+  docker network rm myDockerNetCassandra > /dev/null 2>&1
+  echo "Docker images and Network clean up DONE."
 }
 
 function createSchemaAndData(){
@@ -57,10 +60,6 @@ function createSchemaAndData(){
   else
     echo "Mising Cassandra node! Aborting! You need pass the node: 1, 2 or 3"
   fi
-}
-
-function cleanData(){
-  sudo rm -rf $mac_dir/cass/cassandra-*
 }
 
 function run(){
@@ -109,7 +108,9 @@ function help(){
    echo "schema      : Create some Schema and Data on cluster i.e: ./cassandra-docker.sh schema 1 3.9"
    echo "cleanData   : Delete all cassandra data files"
    echo "backup      : Does a snaposhot on a node with today date. i.e: ./cassandra-docker.sh backup 1 2.1.19"
+   echo "backup_all  : Does backup in all nodes of the cluster - 1 by 1. ./cassandra-docker.sh backup_all 2.1.19"
    echo "restore     : Does a restore on a node by date. i.e: ./cassandra-docker.sh restore 1 2.1.19 2017-12-11"
+   echo "restore_all : Rolling back update process restoring all nodes in cluster. i.e: ./cassandra-docker.sh restore_all 2.1.19 2017-12-11"
    echo "all         : Select * from defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh all 2.1.19"
    echo "truncate    : TRUNCATE TABLE defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh truncate 2.1.19"
    echo "stop        : Stop and clean up all docker running images"
@@ -171,8 +172,8 @@ function restore(){
    docker exec -it cassandra$CV /cassandra/cassandra-manager.sh restore $CV2 $restore_date
 }
 
-
 function all(){
+  ensureVersionIsPresent
   cass_version=$CV
   for i in `seq 1 3`;
   do
@@ -188,6 +189,31 @@ function truncate(){
   echo "Truncate $main_keyspace.$main_table - Cassandra version [$cass_version]"
   docker exec -it cassandra1 sh -c \
   "echo 'TRUNCATE TABLE $main_keyspace.$main_table;' | /cassandra/apache-cassandra-$cass_version/bin/cqlsh 178.18.0.101"
+}
+
+function backup_all(){
+  ensureVersionIsPresent
+  for i in `seq 1 3`;
+  do
+    echo "Backup node 178.18.0.10$i"
+    docker exec -it cassandra$i /cassandra/cassandra-manager.sh backup $CV
+  done
+}
+
+function restore_all(){
+  ensureVersionIsPresent
+  cass_version=$CV
+  restore_date=$CV2
+  # Trumcate before restore to avoid loose data.
+  echo "truncate tables..."
+  docker exec -it cassandra1 sh -c \
+  "echo 'TRUNCATE TABLE $main_keyspace.$main_table;' | /cassandra/apache-cassandra-$cass_version/bin/cqlsh 178.18.0.101"
+  for i in `seq 1 3`;
+  do
+    echo "Restore node 178.18.0.10$i - Cass version[$cass_version] Restore Date:[$restore_date]"
+    docker exec -it cassandra$i /cassandra/cassandra-manager.sh restore $cass_version $restore_date
+    sleep 2
+  done
 }
 
 case $1 in
@@ -218,8 +244,14 @@ case $1 in
       "backup")
           backup
           ;;
+      "backup_all")
+          backup_all
+          ;;
       "restore")
           restore
+          ;;
+      "restore_all")
+          restore_all
           ;;
       "stop")
           cleanUp
