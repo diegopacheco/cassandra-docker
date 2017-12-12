@@ -1,6 +1,7 @@
 #!/bin/bash
 
 VERSION=$2
+ARG3=$3
 main_keyspace=cluster_test
 main_table=test
 data_dir=/cassandra/apache-cassandra-$VERSION/data/data/
@@ -40,7 +41,9 @@ function mainBackup(){
 
 function mainRestore(){
   ensureVersionPresent
-  cd $backup_dir/$TODAY/$main_table-*/snapshots/$main_keyspace-data-backup/
+  ensureDatePresent
+  date_restore=$ARG3
+  cd $backup_dir/$date_restore/$main_table-*/snapshots/$main_keyspace-data-backup/
   cp * /cassandra/apache-cassandra-$VERSION/data/data/$main_keyspace/$main_table-*/
   $nodetool refresh -- $main_keyspace $main_table
   echo "Restore done."
@@ -52,6 +55,16 @@ function ensureVersionPresent(){
     valid="ok"
   else
     echo "Missing Version. You should pass: 2.1.19 or 3.9"
+    exit 1
+  fi
+}
+
+function ensureDatePresent(){
+  if [[ "$ARG3" = *[!\ ]* ]];
+  then
+    valid="ok"
+  else
+    echo "Missing Restore Date. You should pass: YYYY-mm-dd i.e: 2017-12-11"
     exit 1
   fi
 }
