@@ -44,10 +44,6 @@ function mainRestore(){
   ensureDatePresent
   date_restore=$ARG3
 
-  # Trumcate before restore to avoid loose data.
-  echo "truncate tables..."
-  echo "TRUNCATE TABLE $main_keyspace.$main_table; " | $cqlsh $localhost
-
   echo "copy data from backup and restore..."
   cd $backup_dir/$date_restore/$main_table-*/snapshots/$main_keyspace-data-backup/
   cp * /cassandra/apache-cassandra-$VERSION/data/data/$main_keyspace/$main_table-*/
