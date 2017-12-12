@@ -43,6 +43,11 @@ function mainRestore(){
   ensureVersionPresent
   ensureDatePresent
   date_restore=$ARG3
+
+  # Trumcate before restore to avoid loose data.
+  echo "TRUNCATE TABLE $main_keyspace.$main_table" | $cqlsh $localhost
+
+  # Copy data from backup and refresh (need be done by node basis)
   cd $backup_dir/$date_restore/$main_table-*/snapshots/$main_keyspace-data-backup/
   cp * /cassandra/apache-cassandra-$VERSION/data/data/$main_keyspace/$main_table-*/
   $nodetool refresh -- $main_keyspace $main_table
