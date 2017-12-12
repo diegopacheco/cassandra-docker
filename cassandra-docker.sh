@@ -11,13 +11,13 @@ function bake(){
 }
 
 function setupCluster(){
-  SHARED=/usr/local/docker-shared/cassandra-1-$CV/:/cassandra/apache-cassandra-$CV/data
+  SHARED=/usr/local/docker-shared/cassandra-1-$CV/:/cassandra/backup/
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 
-  SHARED=/usr/local/docker-shared/cassandra-2-$CV/:/cassandra/apache-cassandra-$CV/data
+  SHARED=/usr/local/docker-shared/cassandra-2-$CV/:/cassandra/backup/
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra2 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 
-  SHARED=/usr/local/docker-shared/cassandra-3-$CV/:/cassandra/apache-cassandra-$CV/data
+  SHARED=/usr/local/docker-shared/cassandra-3-$CV/:/cassandra/backup/
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.103 --name cassandra3 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 }
 
