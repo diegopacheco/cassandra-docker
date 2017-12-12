@@ -190,14 +190,16 @@ function backup_all(){
 
 function restore_all(){
   ensureVersionIsPresent
-  restore_date=$CV3
+  cass_version=$CV
+  restore_date=$CV2
   # Trumcate before restore to avoid loose data.
   echo "truncate tables..."
-  echo "TRUNCATE TABLE $main_keyspace.$main_table; " | $cqlsh 178.18.0.101
+  docker exec -it cassandra1 sh -c \
+  "echo 'TRUNCATE TABLE $main_keyspace.$main_table;' | /cassandra/apache-cassandra-$cass_version/bin/cqlsh 178.18.0.101"
   for i in `seq 1 3`;
   do
-    echo "Restore node 178.18.0.10$i"
-    docker exec -it cassandra$i /cassandra/cassandra-manager.sh restore $CV $restore_date
+    echo "Restore node 178.18.0.10$i - Cass version[$cass_version] Restore Date:[$restore_date]"
+    docker exec -it cassandra$i sh -c "/cassandra/cassandra-manager.sh restore $cass_version $restore_date"
   done
 }
 
