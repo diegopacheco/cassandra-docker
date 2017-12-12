@@ -96,6 +96,7 @@ function help(){
    echo "schema      : Create some Schema and Data on cluster i.e: ./cassandra-docker.sh schema 1 3.9"
    echo "cleanData   : Delete all cassandra data files"
    echo "backup      : Does a snaposhot on a node with today date. i.e: ./cassandra-docker.sh backup 1 2.1.19"
+   echo "backup_all  : Does backup in all nodes of the cluster - 1 by 1. ./cassandra-docker.sh backup_all 2.1.19"
    echo "restore     : Does a restore on a node by date. i.e: ./cassandra-docker.sh restore 1 2.1.19 2017-12-11"
    echo "restore_all : Rolling back update process restoring all nodes in cluster. i.e: ./cassandra-docker.sh restore_all 2.1.19 2017-12-11"
    echo "all         : Select * from defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh all 2.1.19"
@@ -178,6 +179,15 @@ function truncate(){
   "echo 'TRUNCATE TABLE $main_keyspace.$main_table;' | /cassandra/apache-cassandra-$cass_version/bin/cqlsh 178.18.0.101"
 }
 
+function backup_all(){
+  ensureVersionIsPresent
+  for i in `seq 1 3`;
+  do
+    echo "Backup node 178.18.0.10$i"
+    docker exec -it cassandra$i /cassandra/cassandra-manager.sh backup $CV
+  done
+}
+
 function restore_all(){
   ensureVersionIsPresent
   restore_date=$CV3
@@ -218,6 +228,9 @@ case $1 in
           ;;
       "backup")
           backup
+          ;;
+      "backup_all")
+          backup_all
           ;;
       "restore")
           restore
