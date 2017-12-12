@@ -160,6 +160,7 @@ function restore(){
 }
 
 function all(){
+  ensureVersionIsPresent
   cass_version=$CV
   for i in `seq 1 3`;
   do
