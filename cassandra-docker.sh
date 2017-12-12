@@ -199,7 +199,8 @@ function restore_all(){
   for i in `seq 1 3`;
   do
     echo "Restore node 178.18.0.10$i - Cass version[$cass_version] Restore Date:[$restore_date]"
-    docker exec -it cassandra$i sh -c "/cassandra/cassandra-manager.sh restore $cass_version $restore_date"
+    docker exec -it cassandra$i /cassandra/cassandra-manager.sh restore $cass_version $restore_date
+    sleep 2
   done
 }
 
