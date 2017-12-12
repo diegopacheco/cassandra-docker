@@ -2,6 +2,7 @@
 
 CV=$2
 CV2=$3
+CV3=$4
 mac_docker_ip="localhost"
 mac_dir=/Users/cassandra_docker/
 main_keyspace=cluster_test
@@ -166,8 +167,10 @@ function backup(){
 
 function restore(){
    ensureNodeVersionIsPresent
-   docker exec -it cassandra$CV /cassandra/cassandra-manager.sh restore $CV2
+   restore_date=$CV3
+   docker exec -it cassandra$CV /cassandra/cassandra-manager.sh restore $CV2 $restore_date
 }
+
 
 function all(){
   cass_version=$CV
