@@ -16,7 +16,7 @@ function bake(){
 
 function setupCluster(){
   SHARED=$mac_dir/cass/cassandra-1-$CV/:/cassandra/backup/
-  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 -p 32101:9060 -p 9042:9042 -e CASS_VERSION=$CV diegopacheco/cassandradocker
+  docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.101 --name cassandra1 -p 9160:9160 -p 9042:9042 -e CASS_VERSION=$CV diegopacheco/cassandradocker
 
   SHARED=$mac_dir/cass/cassandra-2-$CV/:/cassandra/backup/
   docker run -d -v $SHARED --net myDockerNetCassandra --ip 178.18.0.102 --name cassandra2 -p 32103:9060 -p 32104:9042 -e CASS_VERSION=$CV diegopacheco/cassandradocker
