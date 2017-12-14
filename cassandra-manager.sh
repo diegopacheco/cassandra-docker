@@ -51,13 +51,29 @@ function mainRestore(){
   ensureDatePresent
   date_restore=$ARG3
 
-  echo "Restore keyspace schema... "
+  # todo: Restore old tokens
+
+  echo "--Drain..."
+  $nodetool drain
+
+  echo "--Schema: Restore Schema..."
   cat $backup_dir/$date_restore/$main_keyspace-keyspace-backup.cql | $cqlsh $localhost
 
-  echo "copy data from backup and restore..."
+  echo "--Copy: Data from backup and restore..."
   cd $backup_dir/$date_restore/$main_table-*/snapshots/$main_keyspace-data-backup/
   cp * /cassandra/apache-cassandra-$VERSION/data/data/$main_keyspace/$main_table-*/
+
+  echo "--Refresh..."
   $nodetool refresh -- $main_keyspace $main_table
+
+  echo "--Repair..."
+  $nodetool repair
+
+  echo "--Restart..."
+  sudo killall java
+  cd /cassandra/apache-cassandra-$VERSION/
+  /cassandra/apache-cassandra-$VERSION/bin/cassandra -R > /cassandra/cassandra.txt &
+
   echo "Restore done."
 }
 
