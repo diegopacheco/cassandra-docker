@@ -53,11 +53,11 @@ function mainRestore(){
 
   # todo: Restore old tokens
 
-  echo "--Drain..."
-  $nodetool drain
-
   echo "--Schema: Restore Schema..."
   cat $backup_dir/$date_restore/$main_keyspace-keyspace-backup.cql | $cqlsh $localhost
+
+  echo "--Drain..."
+  $nodetool drain
 
   echo "--Copy: Data from backup and restore..."
   cd $backup_dir/$date_restore/$main_table-*/snapshots/$main_keyspace-data-backup/
