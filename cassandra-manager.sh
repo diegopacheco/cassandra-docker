@@ -66,13 +66,13 @@ function mainRestore(){
   echo "--Refresh..."
   $nodetool refresh -- $main_keyspace $main_table
 
-  echo "--Repair..."
-  $nodetool repair
-
   echo "--Restart..."
   sudo killall java
   cd /cassandra/apache-cassandra-$VERSION/
   /cassandra/apache-cassandra-$VERSION/bin/cassandra -R > /cassandra/cassandra.txt &
+
+  echo "--Repair..."
+  $nodetool repair
 
   echo "Restore done."
 }
