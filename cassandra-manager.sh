@@ -35,10 +35,10 @@ function backup_data(){
 function mainBackup(){
   ensureVersionPresent
   mkdir -p $backup_dir/$TODAY/
+  backup_tokens
   keyspaces=($($cqlsh $localhost -e 'DESCRIBE KEYSPACES'))
   for keyspace in "${keyspaces[@]}"; do
     	if [[ ${keyspace} != "system" && ${keyspace} != "system_traces" && ${keyspace} != '"OpsCenter"' ]]; then
-         backup_tokens
          backup_keyspaces $keyspace
          backup_data $keyspace
       fi
