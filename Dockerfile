@@ -40,5 +40,6 @@ ADD cassandra-2.1.19.yaml /cassandra/apache-cassandra-2.1.19/conf/cassandra.yaml
 
 EXPOSE 9160
 EXPOSE 9042
+EXPOSE 7199
 
 CMD ["sh","-c","cd /cassandra/ && /cassandra/start-cass.sh"]
