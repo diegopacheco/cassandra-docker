@@ -5,6 +5,7 @@ CV2=$3
 CV3=$4
 main_keyspace=cluster_test
 main_table=test
+DEFAULT_VERSION=$(< ./_cass_docker_version.db)
 
 function bake(){
    docker build -t diegopacheco/cassandradocker . --network=host
@@ -32,6 +33,13 @@ function cleanUp(){
 
   docker network rm myDockerNetCassandra > /dev/null 2>&1
   echo "Docker images and Network clean up DONE."
+}
+
+function setDefaultVersion(){
+  ensureVersionIsPresent
+  VERSION=$CV
+  echo "Setting default version to: $VERSION"
+  echo $VERSION > ./_cass_docker_version.db
 }
 
 function setUpNetwork(){
@@ -102,6 +110,7 @@ function help(){
    echo "all         : Select * from defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh all 2.1.19"
    echo "truncate    : TRUNCATE TABLE defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh truncate 2.1.19"
    echo "stop        : Stop and clean up all docker running images"
+   echo "set_version : Sets the default cassandra version. i.e: ./cassandra-docker.sh set_version 2.1.19"
    echo "help        : help documentation"
 }
 
@@ -112,8 +121,14 @@ function ensureNodeVersionIsPresent(){
     then
       valid="OK"
     else
-      missingVerion
-      exit 1
+      DEFAULT_VERSION=$(< ./_cass_docker_version.db)
+      if [[ "$DEFAULT_VERSION" = *[!\ ]* ]];
+      then
+        CV2=$DEFAULT_VERSION
+      else
+        missingVerion
+        exit 1
+      fi
     fi
   else
     missingNode
@@ -126,8 +141,14 @@ function ensureVersionIsPresent(){
     then
       valid="OK"
     else
-      missingVerion
-      exit 1
+      DEFAULT_VERSION=$(< ./_cass_docker_version.db)
+      if [[ "$DEFAULT_VERSION" = *[!\ ]* ]];
+      then
+        CV=$DEFAULT_VERSION
+      else
+        missingVerion
+        exit 1
+      fi
     fi
 }
 
@@ -249,6 +270,9 @@ case $1 in
           ;;
       "truncate")
           truncate
+          ;;
+      "set_version")
+          setDefaultVersion
           ;;
       *)
           help
