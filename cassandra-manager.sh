@@ -53,7 +53,7 @@ function mainRestore(){
 
   echo "--Tokens:Restore old cluster tokens range..."
   OLD_TOKENS=$(< $backup_dir/$date_restore/tokens_backup.txt)
-  sed -i "s/# initial_token:/initial_token: ${OLD_TOKENS}/g" /cassandra/apache-cassandra-$CASS_VERSION/conf/cassandra.yaml
+  sed -i "s/# initial_token:/initial_token: \"${OLD_TOKENS}\"/g" /cassandra/apache-cassandra-$CASS_VERSION/conf/cassandra.yaml
 
   echo "--Schema: Restore Schema..."
   cat $backup_dir/$date_restore/$main_keyspace-keyspace-backup.cql | $cqlsh $localhost
@@ -81,7 +81,7 @@ function mainRestore(){
 function restart(){
   killall java
   cd /cassandra/apache-cassandra-$CASS_VERSION/
-  /cassandra/apache-cassandra-$CASS_VERSION/bin/cassandra > /cassandra/cassandra.txt &
+  nohup /cassandra/apache-cassandra-$CASS_VERSION/bin/cassandra > /cassandra/cassandra.txt &
   sleep 5
   ps aux | grep java
 }
