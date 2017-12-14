@@ -70,6 +70,7 @@ function mainRestore(){
   killall java
   cd /cassandra/apache-cassandra-$VERSION/
   /cassandra/apache-cassandra-$VERSION/bin/cassandra -R > /cassandra/cassandra.txt &
+  sleep 5
 
   echo "--Repair..."
   $nodetool repair
