@@ -51,7 +51,8 @@ function mainRestore(){
   ensureDatePresent
   date_restore=$ARG3
 
-  # todo: Restore old tokens
+  echo "--Tokens:Restore old cluster tokens range..."
+  sed -i s/\# initial_token\:/$(< $backup_dir/$date_restore/tokens_backup.txt)/g /cassandra/apache-cassandra-$CASS_VERSION/conf/cassandra.yaml
 
   echo "--Schema: Restore Schema..."
   cat $backup_dir/$date_restore/$main_keyspace-keyspace-backup.cql | $cqlsh $localhost
