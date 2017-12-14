@@ -69,16 +69,21 @@ function mainRestore(){
   $nodetool refresh -- $main_keyspace $main_table
 
   echo "--Restart..."
+  restart
+
+  echo "--Repair..."
+  $nodetool repair
+  restart
+
+  echo "Restore done."
+}
+
+function restart(){
   killall java
   cd /cassandra/apache-cassandra-$CASS_VERSION/
   /cassandra/apache-cassandra-$CASS_VERSION/bin/cassandra > /cassandra/cassandra.txt &
   sleep 5
   ps aux | grep java
-
-  echo "--Repair..."
-  $nodetool repair
-
-  echo "Restore done."
 }
 
 function ensureVersionPresent(){
