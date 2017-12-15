@@ -50,6 +50,7 @@ restore_all : Rolling back update process restoring all nodes in cluster. i.e: .
 all         : Select * from defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh all 2.1.19
 truncate    : TRUNCATE TABLE defautl keyspace/table in all nodes. i.e: ./cassandra-docker.sh truncate 2.1.19
 stop        : Stop and clean up all docker running images
+set_version : Sets the default cassandra version. i.e: ./cassandra-docker.sh set_version 2.1.19
 help        : help documentation
 
 ```
