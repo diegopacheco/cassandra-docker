@@ -77,6 +77,29 @@ Cluster 1A (Mac)
 179.18.0.103 - 32105(9160) / 32106(9042)
 ```
 
+## Steps to test Backup/Restore(Linux)
+Backup
+```bash
+./cassandra-docker.sh stop
+sudo rm -rf /usr/local/docker-shared/cassandra-*/
+./cassandra-docker.sh run 2.1.19
+# wait 30s
+./cassandra-docker.sh schema 1 2.1.19
+./cassandra-docker.sh all
+./cassandra-docker.sh backup_all 2.1.19
+ls /usr/local/docker-shared/cassandra-*/
+./cassandra-docker.sh all
+```
+Restore
+```bash
+./cassandra-docker.sh stop
+./cassandra-docker.sh run 2.1.19
+# wait 30s
+./cassandra-docker.sh all
+./cassandra-docker.sh restore_all 2.1.19 2018-02-08
+./cassandra-docker.sh all
+```
+
 ## Similar projects
 
 * dynomite-docker         -> https://github.com/diegopacheco/dynomite-docker

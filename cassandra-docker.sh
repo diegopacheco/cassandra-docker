@@ -96,7 +96,7 @@ function help(){
    echo "functions: "
    echo ""
    echo "bake        : Bakes docker image"
-   echo "run         : Run cassandra docker cluster. i.e: ./cassandra-docker.sh run 2.1"
+   echo "run         : Run cassandra docker cluster. i.e: ./cassandra-docker.sh run 2.1.19"
    echo "info        : Get topology"
    echo "log         : Print cassandra logs, you need pass the node number. i.e: ./cassandra-docker.sh log 1"
    echo "cqlsh       : Enters cqlsh on cassandra. i.e: ./cassandra-docker.sh cqlsh 1 3.9"
