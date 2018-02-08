@@ -94,7 +94,6 @@ Restore
 ```bash
 ./cassandra-docker.sh stop
 ./cassandra-docker.sh run 2.1.19
-./cassandra-docker.sh all
 ./cassandra-docker.sh restore_all 2.1.19 2018-02-08
 ./cassandra-docker.sh all
 ```
