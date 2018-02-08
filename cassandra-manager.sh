@@ -79,11 +79,12 @@ function mainRestore(){
 }
 
 function restart(){
+  echo "Restarting cassandra $CASS_VERSION"
   killall java
+  killall cassandra
   cd /cassandra/apache-cassandra-$CASS_VERSION/
-  nohup /cassandra/apache-cassandra-$CASS_VERSION/bin/cassandra > /cassandra/cassandra.txt &
-  sleep 5
-  ps aux | grep java
+  /cassandra/apache-cassandra-$CASS_VERSION/bin/cassandra > /cassandra/cassandra.txt &
+  echo "Cassandra PID: $(ps aux | grep java)"
 }
 
 function ensureVersionPresent(){
