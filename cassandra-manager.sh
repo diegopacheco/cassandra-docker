@@ -82,8 +82,9 @@ function restart(){
   echo "Restarting cassandra $CASS_VERSION"
   killall java
   killall cassandra
+  killall java
   cd /cassandra/apache-cassandra-$CASS_VERSION/
-  /cassandra/apache-cassandra-$CASS_VERSION/bin/cassandra > /cassandra/cassandra.txt &
+  nohup /cassandra/apache-cassandra-$CASS_VERSION/bin/cassandra > /cassandra/cassandra.txt &
   echo "Cassandra PID: $(ps aux | grep java)"
 }
 
